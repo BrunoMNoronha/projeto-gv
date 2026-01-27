@@ -218,7 +218,7 @@ if (changePasswordForm) {
 
       if (!resposta.ok) {
         if (resposta.status === 401) {
-          window.alert('senha atual não confere!');
+          window.alert('senha não confere');
           return;
         }
 
