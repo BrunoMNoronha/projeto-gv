@@ -1,25 +1,38 @@
-// Script principal do frontend
-const botaoTestar = document.getElementById('btn-testar');
-const resultado = document.getElementById('resultado');
+// Script principal da tela de login
+const loginForm = document.getElementById('login-form');
+const toast = document.getElementById('toast');
 
-const renderResultado = (mensagem, classe) => {
-  resultado.textContent = mensagem;
-  resultado.className = `resultado ${classe}`;
+const showToast = (message) => {
+  if (!toast) return;
+  toast.textContent = message;
+  toast.className = 'toast show';
+  setTimeout(() => {
+    toast.className = toast.className.replace('show', '');
+  }, 3000);
 };
 
-botaoTestar.addEventListener('click', async () => {
-  renderResultado('Consultando API...', '');
+if (loginForm) {
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
 
-  try {
-    const response = await fetch('/api/v1/health');
+    const matricula = document.getElementById('matricula')?.value || '';
+    const password = document.getElementById('password')?.value || '';
 
-    if (!response.ok) {
-      throw new Error(`Erro HTTP: ${response.status}`);
+    if (matricula === '99999999' && password === '123456') {
+      window.location.href = '/home.html';
+    } else {
+      showToast('Matrícula ou senha incorretos.');
     }
+  });
+}
 
-    const data = await response.json();
-    renderResultado(`Status: ${data.status} | Timestamp: ${data.timestamp}`, 'sucesso');
-  } catch (err) {
-    renderResultado(`Falha ao acessar a API: ${err.message}`, 'erro');
-  }
-});
+// Comportamento simples de menu ativo na home
+const menuItems = document.querySelectorAll('.sidebar .menu-item');
+if (menuItems && menuItems.length) {
+  menuItems.forEach((item) => {
+    item.addEventListener('click', () => {
+      menuItems.forEach((i) => i.classList.remove('active'));
+      item.classList.add('active');
+    });
+  });
+}

@@ -3,32 +3,73 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Projeto GV - Base Web</title>
-    <!-- Estilos principais -->
+    <title>Login | Sistema de Gestão de Viaturas</title>
     <link rel="stylesheet" href="/css/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
   </head>
-  <body>
-    <!-- Cabeçalho principal -->
-    <header class="header">
-      <h1>Projeto GV - Sistema Base</h1>
-      <nav class="menu">
-        <a href="#">Início</a>
-        <a href="#">Sobre</a>
-        <a href="#">Contato</a>
-      </nav>
-    </header>
+  <body class="auth-body">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="header-text">
+          <h1>Bem vindo !</h1>
+          <p>Faça seu login para acessar o sistema.</p>
+        </div>
+        <div class="header-logo">
+          <img
+            src="https://via.placeholder.com/60x80?text=LOGO"
+            alt="Logo do sistema"
+          />
+        </div>
+      </div>
 
-    <!-- Conteúdo principal -->
-    <main class="container">
-      <section class="card">
-        <h2>Health Check</h2>
-        <p>Use o botão abaixo para testar a API.</p>
-        <button id="btn-testar" class="btn">Testar API</button>
-        <div id="resultado" class="resultado" aria-live="polite"></div>
-      </section>
-    </main>
+      <div class="avatar-container">
+        <div class="avatar-circle">
+          <i class="fa-solid fa-gears"></i>
+        </div>
+      </div>
 
-    <!-- Script principal -->
+      <div class="login-body">
+        <form id="login-form">
+          <div class="form-group">
+            <label for="matricula">Matrula</label>
+            <input
+              type="text"
+              id="matricula"
+              placeholder="Informe sua matrula"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="password">Senha</label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Informe sua senha"
+              required
+            />
+          </div>
+
+          <div class="form-options">
+            <label class="checkbox-container">
+              <input type="checkbox" id="remember" />
+              <span class="checkbox-label">Relembrar</span>
+            </label>
+          </div>
+
+          <button type="submit" class="btn-primary">Entrar</button>
+
+          <div class="forgot-password">
+            <a href="#"><i class="fa-solid fa-lock"></i> Esqueceu sua senha?</a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
     <script src="/js/main.js"></script>
   </body>
 </html>
