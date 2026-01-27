@@ -200,6 +200,11 @@ if (changePasswordForm) {
       return;
     }
 
+    if (!/^\d{5,10}$/.test(novaSenha)) {
+      window.alert('Nova senha deve conter somente números e ter entre 5 e 10 dígitos.');
+      return;
+    }
+
     try {
       const resposta = await fetch(`/api/v1/usuarios/${usuarioLogado.id}/senha`, {
         method: 'PUT',

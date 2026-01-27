@@ -57,8 +57,8 @@ async function criar(req, res, next) {
       erros.push('Selecione um tipo de perfil válido.');
     }
 
-    if (!senha || senha.length < 4) {
-      erros.push('Informe uma senha com pelo menos 4 caracteres.');
+    if (!senha || !/^\d{5,10}$/.test(senha)) {
+      erros.push('Senha deve conter somente números e ter entre 5 e 10 dígitos.');
     }
 
     if (erros.length) {
@@ -107,8 +107,8 @@ async function atualizar(req, res, next) {
       erros.push('Selecione um tipo de perfil válido.');
     }
 
-    if (!senha || senha.length < 4) {
-      erros.push('Informe uma senha com pelo menos 4 caracteres.');
+    if (!senha || !/^\d{5,10}$/.test(senha)) {
+      erros.push('Senha deve conter somente números e ter entre 5 e 10 dígitos.');
     }
 
     if (erros.length) {
@@ -151,10 +151,10 @@ async function alterarSenha(req, res, next) {
         .json({ message: 'Informe a senha atual e a nova senha.' });
     }
 
-    if (novaSenha.length < 4) {
+    if (!/^\d{5,10}$/.test(novaSenha)) {
       return res
         .status(400)
-        .json({ message: 'Nova senha deve ter pelo menos 4 caracteres.' });
+        .json({ message: 'Nova senha deve conter somente números e ter entre 5 e 10 dígitos.' });
     }
 
     await usuarioService.alterarSenha(id, senhaAtual, novaSenha);
