@@ -64,12 +64,27 @@ if (menuItems && menuItems.length) {
   });
 }
 
+// Utilitário para obter o usuário logado do localStorage
+const getUsuarioLogado = () => {
+  try {
+    const raw = localStorage.getItem('sgv_usuario_logado');
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (e) {
+    return null;
+  }
+};
+
 // Exibir nome do usuário logado na home (se existir)
 const topbarUserName = document.getElementById('topbar-user-name');
 if (topbarUserName) {
   const usuarioLogado = getUsuarioLogado();
   if (usuarioLogado?.nome) {
-    topbarUserName.textContent = usuarioLogado.nome;
+    const posto = usuarioLogado.posto || '';
+    const nome = usuarioLogado.nome || '';
+    topbarUserName.textContent = posto
+      ? `${posto} - ${nome}`
+      : nome;
   }
 }
 
@@ -212,16 +227,6 @@ const validarCPF = (cpf) => {
   if (resto !== parseInt(cpf.charAt(10), 10)) return false;
 
   return true;
-};
-
-const getUsuarioLogado = () => {
-  try {
-    const raw = localStorage.getItem('sgv_usuario_logado');
-    if (!raw) return null;
-    return JSON.parse(raw);
-  } catch (e) {
-    return null;
-  }
 };
 
 if (userForm) {
