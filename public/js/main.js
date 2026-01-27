@@ -91,6 +91,9 @@ if (topbarUserName) {
 // Modal de dados do usuário e alteração de senha
 const userModal = document.getElementById('user-modal');
 const userModalClose = document.getElementById('user-modal-close');
+const passwordModal = document.getElementById('password-modal');
+const passwordModalClose = document.getElementById('password-modal-close');
+const linkAlterarSenha = document.getElementById('link-alterar-senha');
 const changePasswordForm = document.getElementById('change-password-form');
 
 if (topbarUserName && userModal) {
@@ -114,13 +117,6 @@ if (topbarUserName && userModal) {
       usuarioLogado.posto || '-';
     document.getElementById('modal-user-perfil').textContent = perfilLabel;
 
-    const msg = document.getElementById('change-password-message');
-    if (msg) msg.textContent = '';
-    const current = document.getElementById('current-password');
-    const next = document.getElementById('new-password');
-    if (current) current.value = '';
-    if (next) next.value = '';
-
     userModal.style.display = 'flex';
   };
 
@@ -140,18 +136,45 @@ if (topbarUserName && userModal) {
   });
 }
 
+// abertura/fechamento do popup de alteração de senha
+if (linkAlterarSenha && passwordModal) {
+  const openPasswordModal = () => {
+    const msg = document.getElementById('change-password-message');
+    if (msg) msg.textContent = '';
+    const current = document.getElementById('current-password');
+    const next = document.getElementById('new-password');
+    if (current) current.value = '';
+    if (next) next.value = '';
+
+    passwordModal.style.display = 'flex';
+  };
+
+  const closePasswordModal = () => {
+    passwordModal.style.display = 'none';
+  };
+
+  linkAlterarSenha.addEventListener('click', (e) => {
+    e.preventDefault();
+    openPasswordModal();
+  });
+
+  if (passwordModalClose) {
+    passwordModalClose.addEventListener('click', closePasswordModal);
+  }
+
+  passwordModal.addEventListener('click', (e) => {
+    if (e.target === passwordModal) closePasswordModal();
+  });
+}
+
 if (changePasswordForm) {
   changePasswordForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const usuarioLogado = getUsuarioLogado();
-    const msgEl = document.getElementById('change-password-message');
 
     if (!usuarioLogado?.id) {
-      if (msgEl) {
-        msgEl.textContent = 'Usuário não identificado.';
-        msgEl.style.color = '#e74c3c';
-      }
+      window.alert('Usuário não identificado.');
       return;
     }
 
@@ -159,10 +182,7 @@ if (changePasswordForm) {
     const novaSenha = document.getElementById('new-password').value;
 
     if (!senhaAtual || !novaSenha) {
-      if (msgEl) {
-        msgEl.textContent = 'Preencha a senha atual e a nova senha.';
-        msgEl.style.color = '#e74c3c';
-      }
+      window.alert('Preencha a senha atual e a nova senha.');
       return;
     }
 
@@ -178,23 +198,22 @@ if (changePasswordForm) {
       const data = await resposta.json().catch(() => null);
 
       if (!resposta.ok) {
-        if (msgEl) {
-          msgEl.textContent = data?.message || 'Senha não confere.';
-          msgEl.style.color = '#e74c3c';
+        if (resposta.status === 401) {
+          window.alert('senha atual não confere!');
+          return;
         }
+
+        window.alert(data?.message || 'Erro ao alterar a senha.');
         return;
       }
 
-      if (msgEl) {
-        msgEl.textContent = 'Senha alterada com sucesso.';
-        msgEl.style.color = '#2ecc71';
-      }
+      changePasswordForm.reset();
+      const pm = document.getElementById('password-modal');
+      if (pm) pm.style.display = 'none';
+      window.alert('Senha alterada com sucesso.');
     } catch (error) {
       console.error(error);
-      if (msgEl) {
-        msgEl.textContent = 'Erro ao alterar a senha.';
-        msgEl.style.color = '#e74c3c';
-      }
+      window.alert('Erro ao alterar a senha.');
     }
   });
 }

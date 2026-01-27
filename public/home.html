@@ -86,10 +86,21 @@
           <p><strong>Matrícula:</strong> <span id="modal-user-matricula">-</span></p>
           <p><strong>Posto/Graduação:</strong> <span id="modal-user-posto">-</span></p>
           <p><strong>Tipo de Perfil:</strong> <span id="modal-user-perfil">-</span></p>
+          <p>
+            <a href="#" id="link-alterar-senha">Alterar senha</a>
+          </p>
+        </div>
+      </div>
+    </div>
 
-          <hr />
-
-          <h3>Alterar senha</h3>
+    <!-- Modal de alteração de senha -->
+    <div class="modal-backdrop" id="password-modal" style="display: none;">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h2>Alterar senha</h2>
+          <button type="button" class="modal-close" id="password-modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
           <form id="change-password-form">
             <div class="form-field">
               <label for="current-password">Senha atual:</label>
