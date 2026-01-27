@@ -95,21 +95,19 @@ if (userForm) {
 
   const btnIncluir = userForm.querySelector('button[type="submit"]');
 
-  const salvarUsuariosLocal = () => {
-    try {
-      localStorage.setItem('sgv_usuarios', JSON.stringify(usuarios));
-    } catch (e) {
-      // ignora falha de armazenamento
-    }
-  };
+  const apiBase = '/api/v1/usuarios';
 
-  const carregarUsuariosLocal = () => {
+  const carregarUsuariosApi = async () => {
     try {
-      const data = localStorage.getItem('sgv_usuarios');
-      if (data) {
-        usuarios = JSON.parse(data);
+      const resposta = await fetch(apiBase);
+      if (!resposta.ok) {
+        throw new Error('Erro ao buscar usuários.');
       }
-    } catch (e) {
+      usuarios = await resposta.json();
+    } catch (error) {
+      console.error(error);
+      msgEl.textContent = 'Não foi possível carregar os usuários do servidor.';
+      msgEl.style.color = '#e74c3c';
       usuarios = [];
     }
   };
@@ -166,14 +164,30 @@ if (userForm) {
         }
 
         const idx = parseInt(btn.getAttribute('data-index'), 10);
+        const usuario = usuarios[idx];
+        if (!usuario) return;
+
         const confirma = window.confirm(
           'Deseja realmente excluir esse usuário?'
         );
-        if (confirma) {
-          usuarios.splice(idx, 1);
-          salvarUsuariosLocal();
-          renderizarTabelaUsuarios();
-        }
+        if (!confirma) return;
+
+        fetch(`${apiBase}/${usuario.id}`, {
+          method: 'DELETE',
+        })
+          .then((res) => {
+            if (!res.ok) {
+              throw new Error('Erro ao excluir usuário.');
+            }
+          })
+          .then(async () => {
+            await carregarUsuariosApi();
+            renderizarTabelaUsuarios();
+          })
+          .catch((error) => {
+            console.error(error);
+            window.alert('Erro ao excluir usuário no servidor.');
+          });
       });
     });
 
@@ -204,7 +218,10 @@ if (userForm) {
     });
   };
 
-  carregarUsuariosLocal();
+  // carrega usuários do backend ao abrir a tela
+  carregarUsuariosApi().then(() => {
+    renderizarTabelaUsuarios();
+  });
 
   // Ajustes visuais conforme perfil (Leitor não pode incluir/alterar)
   if (perfilLogado === 'LEITOR') {
@@ -252,27 +269,68 @@ if (userForm) {
       return;
     }
 
-    const perfilLabel =
-      perfil === 'ADMIN'
-        ? 'Administrador'
-        : perfil === 'EDITOR'
-        ? 'Editor'
-        : 'Leitor';
+    const payload = { nome, matricula, posto, cpf, perfil };
 
+    // se estiver editando, faz PUT, senão POST
     if (indiceEdicao !== null && usuarios[indiceEdicao]) {
-      usuarios[indiceEdicao] = { nome, matricula, posto, cpf, perfil, perfilLabel };
-      msgEl.textContent = 'Usuário atualizado com sucesso.';
-    } else {
-      usuarios.push({ nome, matricula, posto, cpf, perfil, perfilLabel });
-      msgEl.textContent = 'Usuário incluído com sucesso.';
-    }
+      const usuarioAtual = usuarios[indiceEdicao];
 
-    salvarUsuariosLocal();
-    msgEl.style.color = '#2ecc71';
-    userForm.reset();
-    indiceEdicao = null;
-    if (btnIncluir) btnIncluir.textContent = 'Incluir';
-    renderizarTabelaUsuarios();
+      fetch(`${apiBase}/${usuarioAtual.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+        .then(async (res) => {
+          const data = await res.json().catch(() => null);
+          if (!res.ok) {
+            throw new Error(data?.message || 'Erro ao atualizar usuário.');
+          }
+          msgEl.textContent = 'Usuário atualizado com sucesso.';
+          msgEl.style.color = '#2ecc71';
+          return carregarUsuariosApi();
+        })
+        .then(() => {
+          userForm.reset();
+          indiceEdicao = null;
+          if (btnIncluir) btnIncluir.textContent = 'Incluir';
+          renderizarTabelaUsuarios();
+        })
+        .catch((error) => {
+          console.error(error);
+          msgEl.textContent = error.message || 'Erro ao atualizar usuário.';
+          msgEl.style.color = '#e74c3c';
+        });
+    } else {
+      fetch(apiBase, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+        .then(async (res) => {
+          const data = await res.json().catch(() => null);
+          if (!res.ok) {
+            throw new Error(data?.message || 'Erro ao incluir usuário.');
+          }
+          msgEl.textContent = 'Usuário incluído com sucesso.';
+          msgEl.style.color = '#2ecc71';
+          return carregarUsuariosApi();
+        })
+        .then(() => {
+          userForm.reset();
+          indiceEdicao = null;
+          if (btnIncluir) btnIncluir.textContent = 'Incluir';
+          renderizarTabelaUsuarios();
+        })
+        .catch((error) => {
+          console.error(error);
+          msgEl.textContent = error.message || 'Erro ao incluir usuário.';
+          msgEl.style.color = '#e74c3c';
+        });
+    }
   });
 
   if (btnLimpar) {
@@ -285,7 +343,8 @@ if (userForm) {
   }
 
   if (btnListar) {
-    btnListar.addEventListener('click', () => {
+    btnListar.addEventListener('click', async () => {
+      await carregarUsuariosApi();
       renderizarTabelaUsuarios();
     });
   }
