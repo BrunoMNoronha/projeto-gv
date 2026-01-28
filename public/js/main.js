@@ -50,7 +50,8 @@ if (forgotPasswordForm) {
         msgEl.style.color = '#e74c3c';
         return;
       }
-      msgEl.textContent = 'Senha alterada com sucesso!';
+      showToast('senha alterada com sucesso');
+      msgEl.textContent = 'senha alterada com sucesso';
       msgEl.style.color = '#2ecc71';
       setTimeout(() => {
         forgotPasswordModal.style.display = 'none';
