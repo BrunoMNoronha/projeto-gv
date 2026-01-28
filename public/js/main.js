@@ -87,6 +87,11 @@ if (loginForm) {
       return;
     }
 
+    if (!/^\d{5,10}$/.test(password)) {
+      showToast('A senha deve ter de 5 a 10 números.');
+      return;
+    }
+
     try {
       const resposta = await fetch('/api/v1/login', {
         method: 'POST',
