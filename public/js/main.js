@@ -62,6 +62,8 @@ if (forgotPasswordForm) {
     }
   });
 }
+const apenasDigitos = (valor) => valor.replace(/\D/g, '');
+
 // Script principal da tela de login
 const loginForm = document.getElementById('login-form');
 const toast = document.getElementById('toast');
@@ -82,7 +84,8 @@ if (loginForm) {
     // Normaliza matrícula e senha para validação manual com feedback via toast.
     const matricula = document.getElementById('matricula')?.value.trim() || '';
     const password = document.getElementById('password')?.value.trim() || '';
-    const matriculaSomenteDigitos = matricula.replace(/\D/g, '');
+    // Sanitiza matrícula para conter apenas dígitos antes de validar.
+    const matriculaSomenteDigitos = apenasDigitos(matricula);
 
     if (!matricula || !password) {
       showToast('Informe matrícula e senha.');
@@ -91,7 +94,7 @@ if (loginForm) {
 
     // Valida matrícula com 8 dígitos.
     if (!/^\d{8}$/.test(matriculaSomenteDigitos)) {
-      showToast('A matrícula deve conter exatamente 8 números.');
+      showToast('Matrícula deve conter exatamente 8 números.');
       return;
     }
 
@@ -322,8 +325,6 @@ const userListSection = document.getElementById('user-list-section');
 const userListContainer = document.getElementById('user-list-container');
 const btnLimpar = document.getElementById('btn-limpar');
 const btnListar = document.getElementById('btn-listar');
-
-const apenasDigitos = (valor) => valor.replace(/\D/g, '');
 
 const validarCPF = (cpf) => {
   cpf = apenasDigitos(cpf);
