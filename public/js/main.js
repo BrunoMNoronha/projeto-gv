@@ -79,14 +79,23 @@ if (loginForm) {
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const matricula = document.getElementById('matricula')?.value || '';
-    const password = document.getElementById('password')?.value || '';
+    // Normaliza matrícula e senha para validação manual com feedback via toast.
+    const matricula = document.getElementById('matricula')?.value.trim() || '';
+    const password = document.getElementById('password')?.value.trim() || '';
+    const matriculaSomenteDigitos = matricula.replace(/\D/g, '');
 
     if (!matricula || !password) {
       showToast('Informe matrícula e senha.');
       return;
     }
 
+    // Valida matrícula com 8 dígitos.
+    if (!/^\d{8}$/.test(matriculaSomenteDigitos)) {
+      showToast('A matrícula deve conter exatamente 8 números.');
+      return;
+    }
+
+    // Valida senha com 5 a 10 dígitos.
     if (!/^\d{5,10}$/.test(password)) {
       showToast('A senha deve ter de 5 a 10 números.');
       return;
@@ -98,7 +107,7 @@ if (loginForm) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ matricula, senha: password }),
+        body: JSON.stringify({ matricula: matriculaSomenteDigitos, senha: password }),
       });
 
       const data = await resposta.json().catch(() => null);
