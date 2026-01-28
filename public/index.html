@@ -12,16 +12,10 @@
   </head>
   <body class="auth-body">
     <div class="login-card">
+
       <div class="login-header">
-        <div class="header-text">
-          <h1>Bem vindo !</h1>
-          <p>Faça seu login para acessar o sistema.</p>
-        </div>
-        <div class="header-logo">
-          <img
-            src="https://via.placeholder.com/60x80?text=LOGO"
-            alt="Logo do sistema"
-          />
+        <div class="header-text" style="width:100%;text-align:center;">
+          <span style="font-size:1.3rem; font-weight:600; white-space:nowrap;">Sistema de Gestão de Viaturas - SGV</span>
         </div>
       </div>
 
@@ -34,13 +28,14 @@
       <div class="login-body">
         <form id="login-form">
           <div class="form-group">
-            <label for="matricula">Matrula</label>
-            <input
-              type="text"
-              id="matricula"
-              placeholder="Informe sua matrula"
-              required
-            />
+            <label for="matricula">Matrícula</label>
+              <input
+                type="text"
+                id="matricula"
+                required
+                maxlength="8"
+                inputmode="numeric"
+              />
           </div>
 
           <div class="form-group">
@@ -48,23 +43,54 @@
             <input
               type="password"
               id="password"
-              placeholder="Informe sua senha"
               required
+              maxlength="10"
+              pattern="\d{5,10}"
+              inputmode="numeric"
             />
           </div>
 
-          <div class="form-options">
-            <label class="checkbox-container">
-              <input type="checkbox" id="remember" />
-              <span class="checkbox-label">Relembrar</span>
-            </label>
-          </div>
+
 
           <button type="submit" class="btn-primary">Entrar</button>
 
           <div class="forgot-password">
-            <a href="#"><i class="fa-solid fa-lock"></i> Esqueceu sua senha?</a>
+            <a href="#" id="forgot-password-link"><i class="fa-solid fa-lock"></i> Esqueceu sua senha?</a>
           </div>
+
+    <!-- Modal de recuperação de senha -->
+    <div class="modal-backdrop" id="forgot-password-modal" style="display:none;">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h2>Recuperar senha</h2>
+        </div>
+        <div class="modal-body">
+          <form id="forgot-password-form">
+            <div class="form-group">
+              <label for="forgot-nome">Nome Completo:</label>
+              <input type="text" id="forgot-nome" required />
+            </div>
+            <div class="form-group">
+              <label for="forgot-matricula">Matrícula:</label>
+              <input type="text" id="forgot-matricula" required maxlength="8" inputmode="numeric" />
+            </div>
+            <div class="form-group">
+              <label for="forgot-cpf">CPF:</label>
+              <input type="text" id="forgot-cpf" required maxlength="11" inputmode="numeric" pattern="\d{11}" />
+            </div>
+            <div class="form-group">
+              <label for="forgot-nova-senha">Nova senha:</label>
+              <input type="password" id="forgot-nova-senha" required maxlength="10" pattern="\d{5,10}" inputmode="numeric" />
+            </div>
+            <div id="forgot-password-message" class="form-message"></div>
+            <div class="form-actions" style="justify-content: flex-end; margin-top: 12px;">
+              <button type="submit" class="btn-primary">Alterar senha</button>
+              <button type="button" id="forgot-cancel" class="btn-secondary">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
         </form>
       </div>
     </div>

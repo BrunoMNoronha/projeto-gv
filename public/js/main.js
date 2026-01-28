@@ -1,3 +1,66 @@
+// Recuperação de senha (modal)
+const forgotPasswordLink = document.getElementById('forgot-password-link');
+const forgotPasswordModal = document.getElementById('forgot-password-modal');
+const forgotPasswordForm = document.getElementById('forgot-password-form');
+const forgotCancel = document.getElementById('forgot-cancel');
+
+if (forgotPasswordLink && forgotPasswordModal) {
+  forgotPasswordLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('forgot-password-message').textContent = '';
+    forgotPasswordModal.style.display = 'flex';
+  });
+}
+
+if (forgotCancel && forgotPasswordModal) {
+  forgotCancel.addEventListener('click', () => {
+    forgotPasswordModal.style.display = 'none';
+  });
+}
+
+if (forgotPasswordForm) {
+  forgotPasswordForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const nome = document.getElementById('forgot-nome').value.trim();
+    const matricula = document.getElementById('forgot-matricula').value.trim();
+    const cpf = document.getElementById('forgot-cpf').value.trim();
+    const novaSenha = document.getElementById('forgot-nova-senha').value.trim();
+    const msgEl = document.getElementById('forgot-password-message');
+
+    if (!nome || !matricula || !cpf || !novaSenha) {
+      msgEl.textContent = 'Preencha todos os campos.';
+      msgEl.style.color = '#e74c3c';
+      return;
+    }
+    if (!/^\d{5,10}$/.test(novaSenha)) {
+      msgEl.textContent = 'Nova senha deve conter somente números e ter entre 5 e 10 dígitos.';
+      msgEl.style.color = '#e74c3c';
+      return;
+    }
+
+    try {
+      const resposta = await fetch('/api/v1/usuarios/recuperar-senha', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome, matricula, cpf, novaSenha }),
+      });
+      const data = await resposta.json().catch(() => null);
+      if (!resposta.ok) {
+        msgEl.textContent = data?.message || 'Dados não conferem.';
+        msgEl.style.color = '#e74c3c';
+        return;
+      }
+      msgEl.textContent = 'Senha alterada com sucesso!';
+      msgEl.style.color = '#2ecc71';
+      setTimeout(() => {
+        forgotPasswordModal.style.display = 'none';
+      }, 1200);
+    } catch (err) {
+      msgEl.textContent = 'Erro ao tentar alterar a senha.';
+      msgEl.style.color = '#e74c3c';
+    }
+  });
+}
 // Script principal da tela de login
 const loginForm = document.getElementById('login-form');
 const toast = document.getElementById('toast');

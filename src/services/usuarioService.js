@@ -1,3 +1,11 @@
+// Busca usuário por nome, matrícula e CPF
+async function buscarUsuarioPorDados(nome, matricula, cpf) {
+  const [rows] = await db.execute(
+    'SELECT id, senha FROM usuarios WHERE nome_completo = ? AND matricula = ? AND cpf = ? LIMIT 1',
+    [nome, matricula, cpf]
+  );
+  return rows[0] || null;
+}
 const db = require('../config/db');
 
 // Mapeia o campo "perfil" salvo no banco para o label exibido na tela
@@ -60,7 +68,7 @@ async function excluirUsuario(id) {
   await db.execute(sql, params);
 }
 
-async function alterarSenha(id, senhaAtual, novaSenha) {
+async function alterarSenha(id, senhaAtual, novaSenha, ignorarSenhaAtual = false) {
   const [rows] = await db.execute(
     'SELECT senha FROM usuarios WHERE id = ? LIMIT 1',
     [id]
@@ -74,7 +82,7 @@ async function alterarSenha(id, senhaAtual, novaSenha) {
 
   const senhaBanco = rows[0].senha || '';
 
-  if (senhaBanco !== senhaAtual) {
+  if (!ignorarSenhaAtual && senhaBanco !== senhaAtual) {
     const error = new Error('Senha atual não confere');
     error.status = 401;
     throw error;
@@ -89,4 +97,5 @@ module.exports = {
   atualizarUsuario,
   excluirUsuario,
   alterarSenha,
+  buscarUsuarioPorDados,
 };

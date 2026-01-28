@@ -1,3 +1,24 @@
+// Recuperação de senha por nome, matrícula e CPF
+async function recuperarSenha(req, res, next) {
+  try {
+    const { nome, matricula, cpf, novaSenha } = req.body;
+    if (!nome || !matricula || !cpf || !novaSenha) {
+      return res.status(400).json({ message: 'Preencha todos os campos.' });
+    }
+    if (!/^\d{5,10}$/.test(novaSenha)) {
+      return res.status(400).json({ message: 'Nova senha deve conter somente números e ter entre 5 e 10 dígitos.' });
+    }
+    // Busca usuário por nome, matrícula e cpf
+    const usuario = await usuarioService.buscarUsuarioPorDados(nome, matricula, cpf);
+    if (!usuario) {
+      return res.status(404).json({ message: 'Dados não conferem.' });
+    }
+    await usuarioService.alterarSenha(usuario.id, usuario.senha, novaSenha, true);
+    res.json({ message: 'Senha alterada com sucesso!' });
+  } catch (error) {
+    next(error);
+  }
+}
 const usuarioService = require('../services/usuarioService');
 
 const apenasDigitos = (valor = '') => valor.replace(/\D/g, '');
@@ -174,4 +195,5 @@ module.exports = {
   atualizar,
   excluir,
   alterarSenha,
+  recuperarSenha,
 };
