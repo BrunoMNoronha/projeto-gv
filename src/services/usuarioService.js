@@ -1,6 +1,6 @@
 // Busca usuário por nome, matrícula e CPF
 async function buscarUsuarioPorDados(nome, matricula, cpf) {
-  const [rows] = await db.execute(
+  const [rows] = await db.query(
     'SELECT id, senha FROM usuarios WHERE nome_completo = ? AND matricula = ? AND cpf = ? LIMIT 1',
     [nome, matricula, cpf]
   );
@@ -69,7 +69,7 @@ async function excluirUsuario(id) {
 }
 
 async function alterarSenha(id, senhaAtual, novaSenha, ignorarSenhaAtual = false) {
-  const [rows] = await db.execute(
+  const [rows] = await db.query(
     'SELECT senha FROM usuarios WHERE id = ? LIMIT 1',
     [id]
   );

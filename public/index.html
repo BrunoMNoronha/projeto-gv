@@ -44,9 +44,9 @@
               type="password"
               id="password"
               required
-              maxlength="10"
-              pattern="\d{5,10}"
-              title="A senha deve ter de 5 a 10 números"
+              maxlength="4"
+              pattern="\d{4}"
+              title="A senha deve ter exatamente 4 números"
               inputmode="numeric"
             />
           </div>
@@ -81,7 +81,7 @@
             </div>
             <div class="form-group">
               <label for="forgot-nova-senha">Nova senha:</label>
-              <input type="password" id="forgot-nova-senha" required maxlength="10" pattern="\d{5,10}" inputmode="numeric" />
+              <input type="password" id="forgot-nova-senha" required maxlength="4" pattern="\d{4}" inputmode="numeric" />
             </div>
             <div id="forgot-password-message" class="form-message"></div>
             <div class="form-actions" style="justify-content: flex-end; margin-top: 12px;">

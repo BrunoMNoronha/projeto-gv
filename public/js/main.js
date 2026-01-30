@@ -286,8 +286,8 @@ if (forgotPasswordForm) {
       msgEl.style.color = '#e74c3c';
       return;
     }
-    if (!/^\d{5,10}$/.test(novaSenha)) {
-      msgEl.textContent = 'Nova senha deve conter somente números e ter entre 5 e 10 dígitos.';
+    if (!/^\d{4}$/.test(novaSenha)) {
+      msgEl.textContent = 'Nova senha deve conter exatamente 4 números.';
       msgEl.style.color = '#e74c3c';
       return;
     }
@@ -434,8 +434,8 @@ if (loginForm) {
     }
 
     // Valida senha com 5 a 10 dígitos.
-    if (!/^\d{5,10}$/.test(password)) {
-      showToast('A senha deve ter de 5 a 10 números.');
+    if (!/^\d{4}$/.test(password)) {
+      showToast('A senha deve ter exatamente 4 números.');
       return;
     }
 
@@ -616,8 +616,8 @@ if (changePasswordForm) {
       return;
     }
 
-    if (!/^\d{5,10}$/.test(novaSenha)) {
-      window.alert('Nova senha deve conter somente números e ter entre 5 e 10 dígitos.');
+    if (!/^\d{4}$/.test(novaSenha)) {
+      window.alert('Nova senha deve conter exatamente 4 números.');
       return;
     }
 

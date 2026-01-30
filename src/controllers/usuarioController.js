@@ -5,8 +5,8 @@ async function recuperarSenha(req, res, next) {
     if (!nome || !matricula || !cpf || !novaSenha) {
       return res.status(400).json({ message: 'Preencha todos os campos.' });
     }
-    if (!/^\d{5,10}$/.test(novaSenha)) {
-      return res.status(400).json({ message: 'Nova senha deve conter somente números e ter entre 5 e 10 dígitos.' });
+    if (!/^\d{4}$/.test(novaSenha)) {
+      return res.status(400).json({ message: 'Nova senha deve conter exatamente 4 números.' });
     }
     // Busca usuário por nome, matrícula e cpf
     const usuario = await usuarioService.buscarUsuarioPorDados(nome, matricula, cpf);
@@ -78,8 +78,8 @@ async function criar(req, res, next) {
       erros.push('Selecione um tipo de perfil válido.');
     }
 
-    if (!senha || !/^\d{5,10}$/.test(senha)) {
-      erros.push('Senha deve conter somente números e ter entre 5 e 10 dígitos.');
+    if (!senha || !/^\d{4}$/.test(senha)) {
+      erros.push('Senha deve conter exatamente 4 números.');
     }
 
     if (erros.length) {
@@ -128,8 +128,8 @@ async function atualizar(req, res, next) {
       erros.push('Selecione um tipo de perfil válido.');
     }
 
-    if (!senha || !/^\d{5,10}$/.test(senha)) {
-      erros.push('Senha deve conter somente números e ter entre 5 e 10 dígitos.');
+    if (!senha || !/^\d{4}$/.test(senha)) {
+      erros.push('Senha deve conter exatamente 4 números.');
     }
 
     if (erros.length) {
@@ -172,10 +172,10 @@ async function alterarSenha(req, res, next) {
         .json({ message: 'Informe a senha atual e a nova senha.' });
     }
 
-    if (!/^\d{5,10}$/.test(novaSenha)) {
+    if (!/^\d{4}$/.test(novaSenha)) {
       return res
         .status(400)
-        .json({ message: 'Nova senha deve conter somente números e ter entre 5 e 10 dígitos.' });
+        .json({ message: 'Nova senha deve conter exatamente 4 números.' });
     }
 
     await usuarioService.alterarSenha(id, senhaAtual, novaSenha);

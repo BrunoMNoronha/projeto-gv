@@ -152,7 +152,7 @@ module.exports = { listar, criar, atualizar, excluir, inserirFotos };
 
 async function registrarLeituraKm(veiculoId, km, dataLeitura = null, origem = 'FORM') {
   // valida progresso do hodômetro
-  const [lastRows] = await db.execute(
+  const [lastRows] = await db.query(
     'SELECT km FROM veiculo_km_historico WHERE veiculo_id = ? ORDER BY data_leitura DESC, id DESC LIMIT 1',
     [veiculoId]
   );
