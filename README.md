@@ -5,13 +5,12 @@ Estrutura inicial de um sistema web com Node.js + Express e frontend em HTML/CSS
 ## Requisitos
 
 - Node.js 18+
-- npm
 
 ## Como instalar
 
 ```bash
 # Instale as dependências
-npm i
+npm install
 ```
 
 ## Como rodar em desenvolvimento
