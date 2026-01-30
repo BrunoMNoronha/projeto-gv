@@ -46,7 +46,7 @@ async function criarUsuario({ nome, matricula, posto, cpf, perfil, senha }) {
 
 async function atualizarUsuario(id, { nome, matricula, posto, cpf, perfil, senha }) {
   const sql =
-    'UPDATE usuarios SET nome_completo = ?, matricula = ?, posto_graduacao = ?, cpf = ?, perfil = ?, senha = ? WHERE id = ?';
+    'UPDATE usuarios SET nome_completo = ?, matricula = ?, posto_graduacao = ?, cpf = ?, perfil = ?, senha = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?';
   const params = [nome, matricula, posto, cpf, perfil, senha, id];
 
   await db.execute(sql, params);

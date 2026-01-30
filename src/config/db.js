@@ -1,23 +1,46 @@
-const mysql = require('mysql2/promise');
+const fs = require('fs');
+const path = require('path');
 const dotenv = require('dotenv');
+const sqlite3 = require('sqlite3');
+const { open } = require('sqlite');
 
 dotenv.config();
 
-const {
-  DB_HOST = 'localhost',
-  DB_USER = 'root',
-  DB_PASSWORD = '',
-  DB_NAME = 'sgv',
-} = process.env;
+const DB_FILE = process.env.DB_SQLITE_FILE || path.join(__dirname, '..', '..', 'data', 'sgv.sqlite');
 
-const pool = mysql.createPool({
-  host: DB_HOST,
-  user: DB_USER,
-  password: DB_PASSWORD,
-  database: DB_NAME,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-});
+// Garante diretório do arquivo do banco
+fs.mkdirSync(path.dirname(DB_FILE), { recursive: true });
 
-module.exports = pool;
+// Conexão única para SQLite (não há pool)
+let dbPromise = open({ filename: DB_FILE, driver: sqlite3.Database })
+  .then(async (db) => {
+    await db.exec('PRAGMA foreign_keys = ON;');
+    return db;
+  });
+
+// Fornece API compatível com uso existente (query/execute/getConnection)
+async function query(sql, params = []) {
+  const db = await dbPromise;
+  const rows = await db.all(sql, params);
+  return [rows];
+}
+
+async function execute(sql, params = []) {
+  const db = await dbPromise;
+  const res = await db.run(sql, params);
+  return [{ insertId: res.lastID ?? 0, affectedRows: res.changes ?? 0 }];
+}
+
+async function getConnection() {
+  const db = await dbPromise;
+  return {
+    beginTransaction: () => db.exec('BEGIN'),
+    commit: () => db.exec('COMMIT'),
+    rollback: () => db.exec('ROLLBACK'),
+    execute: (sql, params = []) => db.run(sql, params),
+    query: (sql, params = []) => db.all(sql, params),
+    release: async () => {},
+  };
+}
+
+module.exports = { query, execute, getConnection };
